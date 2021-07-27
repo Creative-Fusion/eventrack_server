@@ -68,11 +68,31 @@ const uploadProfile = async (req, res) => {
 	} catch (error) {
 		console.log({ message: error, state: false });
 	}
+}
+
+const editUserprofile = async (req, res) => {
+	try {
+		var user = req.user;
+		user.name = req.body.name;
+		user.phone = req.body.phone;
+		user.address = req.body.address;
+		// user.gender = req.body.gender;
+		await user.save();
+		res.json({ message: "Profile successfully edited", state: true });
+
+	}
+
+	catch (error) {
+		res.json({ message: error.message, state: false });
+
+	}
 };
+
 
 export default {
 	getMyEvents,
 	getCurrentUserData,
 	getMyFavourites,
 	uploadProfile,
+	editUserprofile,
 };

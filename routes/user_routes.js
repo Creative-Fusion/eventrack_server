@@ -9,11 +9,19 @@ router.get("/", checkUser, user_controller.getCurrentUserData);
 router.get("/myEvents", checkUser, user_controller.getMyEvents);
 router.get("/myfavourites", checkUser, user_controller.getMyFavourites);
 
+
+
 router.post(
 	"/uploadProfile",
 	checkUser,
 	image.upload("image"),
 	user_controller.uploadProfile
+);
+
+router.post(
+	"/editUserprofile",
+	checkUser,
+	user_controller.editUserprofile
 );
 
 export default router;
