@@ -19,6 +19,7 @@ const getCurrentUserData = async (req, res) => {
 	const events = await Event.find({}, { registeredUsers: 0 }).sort({
 		"dateTime.dates.0": 1,
 	});
+	console.log(events.length);
 	if (events) jsonResult.event_list = events;
 	return res.json(jsonResult);
 };
@@ -33,7 +34,7 @@ const getMyEvents = async (req, res) => {
 				state: true,
 			});
 
-		return res.json({ events_list: events, state: true });
+		return res.json({ event_list: events, state: true });
 	} catch (error) {
 		return res.json({ message: error, state: false });
 	}
@@ -49,7 +50,22 @@ const getMyFavourites = async (req, res) => {
 				state: true,
 			});
 
-		return res.json({ events_list: events, state: true });
+		return res.json({ event_list: events, state: true });
+	} catch (error) {
+		return res.json({ message: error, state: false });
+	}
+};
+
+const addtoFavourites = async (req, res) => {
+	try {
+		const event = req.params.id;
+		const user = req.user;
+		await user.favourites.push(event);
+		user.save();
+		return res.json({
+			message: "Successfully added to Favourites",
+			state: true,
+		});
 	} catch (error) {
 		return res.json({ message: error, state: false });
 	}
@@ -68,24 +84,6 @@ const uploadProfile = async (req, res) => {
 	} catch (error) {
 		console.log({ message: error, state: false });
 	}
-}
-
-const editUserprofile = async (req, res) => {
-	try {
-		var user = req.user;
-		user.name = req.body.name;
-		user.phone = req.body.phone;
-		user.address = req.body.address;
-		// user.gender = req.body.gender;
-		await user.save();
-		res.json({ message: "Profile successfully edited", state: true });
-
-	}
-
-	catch (error) {
-		res.json({ message: error.message, state: false });
-
-	}
 };
 
 
@@ -93,6 +91,6 @@ export default {
 	getMyEvents,
 	getCurrentUserData,
 	getMyFavourites,
+	addtoFavourites,
 	uploadProfile,
-	editUserprofile,
 };
