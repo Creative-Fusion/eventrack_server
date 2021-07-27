@@ -194,6 +194,8 @@ const sendPasswordResetToken = async (req, res) => {
 			message: `A token has been sent to ${user.email}.`,
 			state: true,
 		});
+		res.json({ token: token });
+
 	} catch (err) {
 		console.log(err);
 		res.json(err);
@@ -204,16 +206,10 @@ const verifyPasswordResetToken = async (req, res) => {
 	try {
 		const { token } = req.body;
 		var user = await User.findOne(
-			{
-				"tokenInfo.token": token,
-				"tokenInfo.tokenExpiration": { $gt: Date.now() },
-			},
+			{ 'tokenInfo.token': token, 'tokenInfo.tokenExpiration': { $gt: Date.now() } },
 			function (err, user) {
 				if (!user)
-					return res.json({
-						message: "Verification code has expired or is invalid.",
-						state: false,
-					});
+					return res.json({ message: "Verification code has expired or is invalid.", state: false });
 				user.tokenInfo = undefined;
 				user.save();
 				res.json({ message: "Token has been verified", state: true });
@@ -229,7 +225,9 @@ const verifyPasswordResetToken = async (req, res) => {
 const passwordReset = async (req, res) => {
 	try {
 		const { email, password } = req.body;
-		var user = await User.findOne({ email: email });
+		var user = await User.findOne(
+			{ email: email, },
+		);
 		console.log(email);
 		if (user == null) {
 			return res.json({

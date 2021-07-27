@@ -24,6 +24,8 @@ router.post(
 	auth_controller.loginUser
 );
 
+
+
 router.get("/verify", auth_controller.sendVerificationToken);
 
 router.post("/verify", auth_controller.verifyToken);
